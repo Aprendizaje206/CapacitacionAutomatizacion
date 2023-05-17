@@ -58,8 +58,7 @@ public class FirstScriptTest {
         WebElement logoutText = driver.findElement(By.xpath("//div[@id='flash']"));
         String valueLogout = logoutText.getText().trim().replaceAll("\n", "").replace("×", "");
 
-        Assert.assertEquals("You logged out of the secure area!", valueLogout);//assert
-
+        Assert.assertEquals("You logged out of the secure area!", valueLogout);
 
     }
 }
