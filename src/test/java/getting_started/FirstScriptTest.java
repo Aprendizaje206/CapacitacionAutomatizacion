@@ -9,6 +9,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.lang.invoke.MethodHandles;
+import java.security.PrivateKey;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +24,7 @@ public class FirstScriptTest {
     public void setUp() {
 
         driver = new ChromeDriver();
-        driver.get("https://google.com");
+        driver.get("https://the-internet.herokuapp.com/login");
 
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
@@ -35,17 +37,29 @@ public class FirstScriptTest {
 
     @Test
     public void firstTest() {
-        String title = driver.getTitle();
-        Assert.assertEquals("Google", title);
 
-        WebElement searchBox = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.name("q")));
-        WebElement searchButton = driver.findElement(By.name("btnK"));
+        WebElement username = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='username']")));
+        WebElement password = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='password']")));
+        WebElement loginButton = driver.findElement(By.xpath("//i[contains(text(),'Login')]"));
 
-        searchBox.sendKeys("Selenium");
-        searchButton.click();
+        username.sendKeys("tomsmith");
+        password.sendKeys("SuperSecretPassword!");
+        loginButton.click();
 
-        searchBox = driver.findElement(By.name("q"));
-        String value = searchBox.getAttribute("value");
-        Assert.assertEquals("Selenium", value);
+
+        WebElement loginText = driver.findElement(By.xpath("//div[@id='flash']"));
+        String value = loginText.getText().trim().replaceAll("\n", "").replace("×", "");
+
+        Assert.assertEquals("You logged into a secure area!", value);
+
+        WebElement logoutButton = driver.findElement(By.xpath("//i[contains(text(),'Logout')]"));
+        logoutButton.click();
+
+        WebElement logoutText = driver.findElement(By.xpath("//div[@id='flash']"));
+        String valueLogout = logoutText.getText().trim().replaceAll("\n", "").replace("×", "");
+
+        Assert.assertEquals("You logged out of the secure area!", valueLogout);
+
+
     }
 }
