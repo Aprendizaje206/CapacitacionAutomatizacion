@@ -22,7 +22,7 @@ public class FirstScriptTest {
     public void setUp() {
 
         driver = new ChromeDriver();
-        driver.get("https://google.com");
+        driver.get("https://the-internet.herokuapp.com/login");
 
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
@@ -34,9 +34,38 @@ public class FirstScriptTest {
     }
 
     @Test
-    public void firstTest() {
+    public void firstTest() throws InterruptedException {
+
+        WebElement usuario = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.name("username")));
+        usuario.sendKeys("tomsmith");
+        Thread.sleep(1000);
+
+        WebElement password = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.name("password")));
+        password.sendKeys("SuperSecretPassword!");
+        Thread.sleep(1000);
+
+        WebElement loggin = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"login\"]/button")));
+        loggin.click();
+        Thread.sleep(1000);
+
+        WebElement tittle = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(),\"You logged into a secure area!\")]")));
+        String tittleIni =tittle.getText().trim();
+        tittleIni=tittleIni.replaceAll("\n","");
+        tittleIni=tittleIni.replaceAll("'*'","");
+        System.out.println(tittleIni);
+        Thread.sleep(1000);
+
+        String comparativo = "You logged into a secure area!×";
+
+        Assert.assertEquals(comparativo,tittleIni);
+
+        WebElement loggout = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"content\"]/div/a")));
+        loggout.click();
+        Thread.sleep(1000);
+
+        /*
         String title = driver.getTitle();
-        Assert.assertEquals("Google", title);
+        Assert.assertEquals("Página de inicio de sesión", title);
 
         WebElement searchBox = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.name("q")));
         WebElement searchButton = driver.findElement(By.name("btnK"));
@@ -47,5 +76,7 @@ public class FirstScriptTest {
         searchBox = driver.findElement(By.name("q"));
         String value = searchBox.getAttribute("value");
         Assert.assertEquals("Selenium", value);
+
+         */
     }
 }
