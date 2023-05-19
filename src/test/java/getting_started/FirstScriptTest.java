@@ -22,7 +22,7 @@ public class FirstScriptTest {
     public void setUp() {
 
         driver = new ChromeDriver();
-        driver.get("https://google.com");
+        driver.get("https://the-internet.herokuapp.com/login");
 
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
@@ -34,18 +34,30 @@ public class FirstScriptTest {
     }
 
     @Test
-    public void firstTest() {
-        String title = driver.getTitle();
-        Assert.assertEquals("Google", title);
+    public void firstTest() throws InterruptedException {
 
-        WebElement searchBox = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.name("q")));
-        WebElement searchButton = driver.findElement(By.name("btnK"));
+        WebElement user = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.id("username")));
+        user.sendKeys("tomsmith");
 
-        searchBox.sendKeys("Selenium");
-        searchButton.click();
+        WebElement password = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.id("password")));
+        password.sendKeys("SuperSecretPassword!");
 
-        searchBox = driver.findElement(By.name("q"));
-        String value = searchBox.getAttribute("value");
-        Assert.assertEquals("Selenium", value);
+        WebElement button = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"login\"]/button")));
+        button.click();
+
+        Thread.sleep(5000);
+
+        WebElement result = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(),'You logged into a secure area!')]")));
+        String resultText = result.getText().trim();
+        resultText = resultText.replaceAll("\n","");
+        resultText = resultText.replaceAll("×","");
+        //result.getText();
+        System.out.println(resultText);
+
+        Thread.sleep(5000);
+
+        String textoValidacion = "You logged into a secure area!";
+        Assert.assertEquals(textoValidacion,resultText);
+
     }
 }
